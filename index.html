@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Angle Selector Tool</title>
+    <style>
+      body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: #eaf2f8;
+        font-family: "Helvetica Neue", sans-serif;
+      }
+
+      input[type="number"],
+      input[type="range"],
+      .options label {
+        font-size: 1.3em;
+        margin: 8px 0;
+      }
+
+      .options {
+        margin: 12px 0;
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+        max-width: 400px;
+      }
+
+      .slider-wrapper {
+        width: 100%;
+        max-width: 400px;
+        margin: 15px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="options">
+      <label
+        ><input type="radio" id="preset0" name="anglePreset" value="0" />
+        0°</label
+      >
+      <label
+        ><input type="radio" id="preset45" name="anglePreset" value="45" />
+        45°</label
+      >
+      <label
+        ><input type="radio" id="preset60" name="anglePreset" value="60" />
+        60°</label
+      >
+      <label
+        ><input type="radio" id="preset90" name="anglePreset" value="90" />
+        90°</label
+      >
+      <label
+        ><input type="radio" id="preset180" name="anglePreset" value="180" />
+        180°</label
+      >
+    </div>
+    <div class="slider-wrapper">
+      <input
+        type="range"
+        id="angleRange"
+        min="0"
+        max="360"
+        value="180"
+        style="width: 100%"
+      />
+    </div>
+    <input type="number" id="angleNumber" value="0" min="0" max="360" />
+
+    <script>
+      const angleNumber = document.getElementById("angleNumber");
+      const angleRange = document.getElementById("angleRange");
+      const anglePresets = document.getElementsByName("anglePreset");
+
+      function synchronizeValues() {
+        let value = parseInt(angleNumber.value);
+        if (isNaN(value) || value < 0) value = 0;
+        if (value > 360) value = value % 360;
+        angleNumber.value = value;
+        angleRange.value = value;
+        selectRadioButton(value);
+      }
+
+      function synchronizeSlider() {
+        angleNumber.value = angleRange.value;
+        selectRadioButton(angleRange.value);
+      }
+
+      function synchronizeRadioButtons() {
+        for (let radio of anglePresets) {
+          if (radio.checked) {
+            angleNumber.value = radio.value;
+            angleRange.value = radio.value;
+          }
+        }
+      }
+
+      function selectRadioButton(value) {
+        for (let radio of anglePresets) {
+          radio.checked = radio.value == value;
+        }
+      }
+
+      angleNumber.addEventListener("input", synchronizeValues);
+      angleRange.addEventListener("input", synchronizeSlider);
+      for (let radio of anglePresets) {
+        radio.addEventListener("change", synchronizeRadioButtons);
+      }
+    </script>
+  </body>
+</html>
